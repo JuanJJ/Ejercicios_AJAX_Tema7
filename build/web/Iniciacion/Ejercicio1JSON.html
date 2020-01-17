@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            function descargaArchivo() {
+                if (window.XMLHttpRequest) {
+                    peticion_http=new XMLHttpRequest();
+                } else if (window.ActiveXObject) {
+                    peticion_http=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                peticion_http.onreadystatechange=muestraContenido;
+
+                peticion_http.open('GET','datos_json.txt', true);
+                peticion_http.send(null);
+
+                function muestraContenido() {
+                    //alert("numero de peticion"+peticion_http.readyState);
+
+                    if (peticion_http.readyState==4) {
+                        if(peticion_http.status==200){
+                            var respuestaJson=peticion_http.responseText;
+                            var objetoJson=eval("("+respuestaJson+")");
+                            
+                            var mensaje=objetoJson.mensaje;
+                            var telefono=objetoJson.parametros.telefono;
+                            var codigoPostal=objetoJson.parametros.codigopostal;
+                            var fecha=objetoJson.parametros.fechanacimiento;
+                            
+                            var texto="Mensaje: "+mensaje+"<br>"+"Telefono: "+
+                                    telefono+"<br>"+"Postal: "+codigoPostal+"<br>"+
+                                    "Fecha: "+fecha;
+                            
+                            document.getElementById('texto').innerHTML=texto;
+                            
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="texto"></div>
+        <input type="button" name="enviar" value="enviar" onclick="descargaArchivo()">
+    </body>
+</html>

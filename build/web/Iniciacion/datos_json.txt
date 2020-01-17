@@ -1,0 +1,3 @@
+{mensaje:'este es un dato de ejemplo', 
+parametros:{telefono:'956236598', codigopostal:' 11630', fechanacimiento: '28-11-2013'}
+}

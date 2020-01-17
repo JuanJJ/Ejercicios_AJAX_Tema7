@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            function validaDatos() {
+                if (window.XMLHttpRequest) {
+                    peticion_http=new XMLHttpRequest();
+                } else if (window.ActiveXObject) {
+                    peticion_http=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                peticion_http.onreadystatechange = procesaRespuesta;
+                peticion_http.open("post","validaNombreJson.jsp",true);
+                peticion_http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                var nombre=document.getElementById("nombre").value;
+                var textoPost = "nombre="+nombre+"&nocache=" + Math.random();
+                peticion_http.send(textoPost);
+                
+            }
+            function procesaRespuesta(){
+                if (peticion_http.readyState == 4) {
+                    if (peticion_http.status == 200) {
+                        var respuesta_json = peticion_http.responseText;
+                        var objeto_json = eval("(" + respuesta_json + ")");
+                        var disponibilidad=objeto_json.disponibilidad;
+                        var respuesta=document.getElementById("respuesta");
+                        if(disponibilidad=="si"){
+                            var nombre=document.getElementById("nombre").value;
+                            respuesta.innerHTML="El nombre "+nombre+" esta disponible";
+                        }else{
+                            var alternativas=objeto_json.alternativas;
+                            console.log(alternativas);
+                            var nombre=document.getElementById("nombre").value;
+                            var texto="El nombre "+nombre+" no esta disponible pruebe uno de estos:<br><ul>";
+                            texto+="<li><a href='#' onclick='insertaNombre(this)'>"+alternativas[0]+"</a></li>";
+                            texto+="<li><a href='#' onclick='insertaNombre(this)'>"+alternativas[1]+"</a></li>";
+                            texto+="<li><a href='#' onclick='insertaNombre(this)'>"+alternativas[2]+"</a></li>";
+                            texto+="<li><a href='#' onclick='insertaNombre(this)'>"+alternativas[3]+"</a></li>";
+                            texto+="</ul>";
+                            respuesta.innerHTML=texto;
+                        }
+                    }
+                }
+            }
+            function insertaNombre(ob){
+                var cajaNombre=document.getElementById("nombre");
+                cajaNombre.value=ob.innerHTML;
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Comprobar disponibiladad del login y mostrar alternativas</h1>
+        <form action="">
+            <label for="nombre">Nombre de usuario</label>
+            <input type="text" name="nombre" id="nombre">
+            <a href="#" onclick="validaDatos()">Comprobar disponibilidad</a>
+        </form>
+        <div id="respuesta"></div>
+    </body>
+</html>

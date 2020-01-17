@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            function descargaArchivo() {
+                if (window.XMLHttpRequest) {
+                    peticion_http=new XMLHttpRequest();
+                } else if (window.ActiveXObject) {
+                    peticion_http=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                peticion_http.onreadystatechange=muestraContenido;
+
+                peticion_http.open('GET','datos_xml.xml', true);
+                peticion_http.send(null);
+
+                function muestraContenido() {
+                    //alert("numero de peticion"+peticion_http.readyState);
+                    var titulo="";
+                    var artista="";
+                    var pais="";
+                    var texto="";
+                    
+                    
+                    if (peticion_http.readyState==4) {
+                        if(peticion_http.status==200){
+                            var documentoXML=peticion_http.responseXML;
+                            console.log(documentoXML);
+                            var datos=documentoXML.getElementsByTagName("CD");
+                            
+                            for(i=0;i<datos.length;i++){
+                                titulo=documentoXML.getElementsByTagName("TITULO")[i].firstChild.nodeValue;
+                                artista=documentoXML.getElementsByTagName("ARTISTA")[i].firstChild.nodeValue;
+                                pais=documentoXML.getElementsByTagName("PAIS")[i].firstChild.nodeValue;
+                                texto=texto+titulo+"-----"+artista+"------"+pais+"<br>";
+                            }
+                            document.getElementById('texto').innerHTML=texto;
+                            
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="texto"></div>
+        <input type="button" name="enviar" value="enviar" onclick="descargaArchivo()">
+    </body>
+</html>
