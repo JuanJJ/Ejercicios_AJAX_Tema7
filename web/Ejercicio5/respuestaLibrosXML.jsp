@@ -4,14 +4,33 @@
     Author     : Alumno_2DAW
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
-</html>
+<%@page import="java.util.List"%>
+<%@page import="modelo.Libro"%>
+<%@page import="modelo.Bd_Busqueda"%>
+<%@page contentType="text/xml" pageEncoding="UTF-8"%>
+<%
+    String libro=request.getParameter("libro");
+    Bd_Busqueda bd=new Bd_Busqueda();
+    List<Libro>listaLibros=bd.getLibros(libro);
+    
+    if(listaLibros.size()==0){
+        out.print("<respuesta><encontrado>no</encontrado></respuesta>");
+    } else if(listaLibros!=null){
+        
+        String texto="<respuesta>"
+                + "<encontrado>si</encontrado>"
+                + "<disponible>"
+                + "<libros>";
+        for(int i=0;i<listaLibros.size();i++){
+            Libro lib=listaLibros.get(i);
+            String titulo=lib.getTitulo();
+            String autor=lib.getAutor();
+            texto+="<titulo>"+titulo+"</titulo>"
+                + "<autor>"+autor+"</autor>";
+            
+        }
+        texto+="</libros></disponible></respuesta>";
+        out.print(texto);
+    }
+    
+%>

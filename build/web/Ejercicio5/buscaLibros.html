@@ -18,17 +18,53 @@ and open the template in the editor.
                 }
 
                 peticion_http.onreadystatechange=muestraLibros;
-                //TERMINAR
+
                 peticion_http.open('POST','respuestaLibrosXML.jsp', true);
-                peticion_http.send(null);
+                peticion_http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                var textoPost="libro="+document.getElementById("libro").value;
+                textoPost+="&nocache=" + Math.random();
+                peticion_http.send(textoPost);
+                
+                function muestraLibros(){
+                    if(peticion_http.readyState==4){
+                        if(peticion_http.status==200){
+                            var tit=document.getElementById("libro").value;
+                            var resultado=document.getElementById("resultado");
+                            var documentoXML=peticion_http.responseXML;
+                            var encontrados=documentoXML.getElementsByTagName("encontrado");
+                            var encontrado=encontrados[0].firstChild.nodeValue;
+                            if(encontrado=="si"){
+                                var titulo=documentoXML.getElementsByTagName("titulo");
+                                var autor=documentoXML.getElementsByTagName("autor");
+                                var texto="<h3>Libros disponibles sobre: "+tit+"</h3>";
+                                texto+="<table border='1'>";
+                                for (let i = 0; i < titulo.length; i++) {
+                                    texto+="<tr><td>"+titulo[i].firstChild.nodeValue+"</td>";
+                                    texto+="<td>"+autor[i].firstChild.nodeValue+"</td></tr>";
+                                }
+                                texto+="</table>";
+                                resultado.innerHTML=texto;
+                            }else{
+                                var tit=document.getElementById("libro").value;
+                                var texto="<h3>No existe ningun libro con el titulo: "+tit+"</h3>";
+                                resultado.innerHTML=texto;
+                            }
+                            
+                            
+                        }
+                    }
+                }
 
             }
         </script>
     </head>
     <body>
         <h1>Comprobar si hay libros disponibles sobre:</h1>
-        <label for="libro">Tematica del libro:</label>
-        <input type="text" name="libro" id="libro">
-        <input type="button" value="Disponibilidad del libro" onclick="buscaLibro()">
+        <form>
+            <label for="libro">Tematica del libro:</label>
+            <input type="text" name="libro" id="libro">
+            <input type="button" value="Disponibilidad del libro" onclick="buscaLibro()">
+        </form>
+        <div id="resultado"></div>
     </body>
 </html>
