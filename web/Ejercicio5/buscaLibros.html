@@ -38,6 +38,7 @@ and open the template in the editor.
                                 var autor=documentoXML.getElementsByTagName("autor");
                                 var texto="<h3>Libros disponibles sobre: "+tit+"</h3>";
                                 texto+="<table border='1'>";
+                                texto+="<thead><th>Titulo</th><th>Autor</th></thead>";
                                 for (let i = 0; i < titulo.length; i++) {
                                     texto+="<tr><td>"+titulo[i].firstChild.nodeValue+"</td>";
                                     texto+="<td>"+autor[i].firstChild.nodeValue+"</td></tr>";
